@@ -240,7 +240,7 @@ int main (int argc, char *argv[])
       if (!validScenarioName)
         {
           std::cout << "Error: Invalid scenario name \"" << scenarioName << "\"" << std::endl;
-          std::cout << "Valid scenario names are: \"All\", \"RttFairness\"";
+          std::cout << "Valid scenario names are: \"All\"";
           for (const auto& mapping : ScenarioNumberMapping)
             {
               std::cout << ", \"" << mapping.second << "\"";
