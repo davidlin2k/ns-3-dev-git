@@ -204,25 +204,65 @@ int main (int argc, char *argv[])
 
   if (scenarioName == "")
     {
-      scenarioName = ScenarioNumberMapping[scenarioNumber];
+      auto it = ScenarioNumberMapping.find (scenarioNumber);
+      
+      if (it != ScenarioNumberMapping.end ())
+        {
+          scenarioName = it->second;
+        }
+      else if (!scenarioNumber.empty ())
+        {
+          std::cout << "Error: Invalid scenario number \"" << scenarioNumber << "\"" << std::endl;
+          std::cout << "Valid scenario numbers are:";
+          for (const auto& mapping : ScenarioNumberMapping)
+            {
+              std::cout << " \"" << mapping.first << "\"";
+            }
+          std::cout << std::endl;
+          exit (-1);
+        }
     }
-
+    
+  // Check if scenarioName is valid (if it's not "All" or "RttFairness")
   if (scenarioName != "All" && scenarioName != "RttFairness")
     {
+      bool validScenarioName = false;
+      
+      for (const auto& mapping : ScenarioNumberMapping)
+        {
+          if (mapping.second == scenarioName)
+            {
+              validScenarioName = true;
+              break;
+            }
+        }
+        
+      if (!validScenarioName)
+        {
+          std::cout << "Error: Invalid scenario name \"" << scenarioName << "\"" << std::endl;
+          std::cout << "Valid scenario names are: \"All\", \"RttFairness\"";
+          for (const auto& mapping : ScenarioNumberMapping)
+            {
+              std::cout << ", \"" << mapping.second << "\"";
+            }
+          std::cout << std::endl;
+          exit (-1);
+        }
+      
       RunOneScenario (scenarioName);
     }
-  else if (scenarioName != "All" && scenarioName == "RttFairness")
+  else if (scenarioName == "RttFairness")
     {
       RunRttFairness (scenarioName);
     }
   else
     {
       RunRttFairness (scenarioName);
-      for (std::map<std::string, std::string>::iterator it = ScenarioNumberMapping.begin (); it != ScenarioNumberMapping.end (); ++it)
+      for (const auto& mapping : ScenarioNumberMapping)
         {
-          if (it->second != "RttFairness")
+          if (mapping.second != "RttFairness")
             {
-              RunOneScenario (it->second);
+              RunOneScenario (mapping.second);
             }
         }
     }
